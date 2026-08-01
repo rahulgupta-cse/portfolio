@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/rahulgupta-cse/portfolio#readme",
   "dependencies": {
+    "@vercel/node": "^5.9.3",
     "resend": "^6.18.1"
   }
 }

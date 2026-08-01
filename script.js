@@ -327,47 +327,37 @@ document.addEventListener("DOMContentLoaded", () => {
 // ==========================
 // EmailJS Integration
 // ==========================
-document.addEventListener("DOMContentLoaded", () => {
+const contactForm = document.querySelector(".contact-form");
 
-    emailjs.init({
-        publicKey: "Q6bT5F5UvfjnkmkVQ"
+contactForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const formData = {
+    name: contactForm.querySelector('input[placeholder="Your Name"]').value,
+    email: contactForm.querySelector('input[type="email"]').value,
+    subject: contactForm.querySelector('input[placeholder="Subject"]').value,
+    message: contactForm.querySelector("textarea").value,
+  };
+
+  try {
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
     });
 
-    const contactForm = document.querySelector(".contact-form");
+    const result = await response.json();
 
-    contactForm.addEventListener("submit", function (e) {
-
-        e.preventDefault();
-
-        // Send email to you
-        emailjs.sendForm(
-            "service_jriz27o",
-            "template_lndfl8o",
-            contactForm
-        )
-        .then(() => {
-
-            // Send auto reply
-            return emailjs.sendForm(
-                "service_jriz27o",
-                "template_6sxgp3d",
-                contactForm
-            );
-
-        })
-        .then(() => {
-
-            alert("✅ Message sent successfully!");
-            contactForm.reset();
-
-        })
-        .catch((error) => {
-
-            console.error(error);
-            alert(error.text);
-
-        });
-
-    });
-
+    if (result.success) {
+      alert("✅ Message sent successfully!");
+      contactForm.reset();
+    } else {
+      alert("❌ " + result.message);
+    }
+  } catch (error) {
+    console.error(error);
+    alert("❌ Something went wrong.");
+  }
 });
